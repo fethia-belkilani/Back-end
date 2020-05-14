@@ -12,17 +12,17 @@ export class TimeController {
 
   @Get(':user/:proj')
   async getTimes(@Param() params,@Res() res: Response) {
-    /*getTime(params.user, params.proj, data => {
+    getTime(params.user, params.proj, data => {
       let imputation:Imputation = new Imputation();
       data.time_entries.forEach(element => {
         imputation.id = element.id;
         imputation.date = element.spent_on;
         imputation.hours = element.hours;
       });
-    });*/
-/*    importImputations(params.user, params.proj, imput => {
+    });
+    importImputations(params.user, params.proj, imput => {
       res.status(HttpStatus.OK).json(imput);
-    })*/
+    })
   } 
   
   

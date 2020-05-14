@@ -7,5 +7,6 @@ async function bootstrap() {
   await app.listen(3030);
 }
 bootstrap();
-//json-server --watch -p 4000 tvioo.json
+//  json-server --watch -p 4000 tvioo.json
 
+//  Bundle exec rails server webrick -e production

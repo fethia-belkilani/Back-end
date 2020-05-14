@@ -1,0 +1,32 @@
+{
+    "projects": [{
+            "id": 1,
+            "title": "proj1",
+            "user": {
+                "id": 1,
+                "name": "Fethia Kilani"
+            }
+
+        },
+        {
+            "id": 2,
+            "title": "proj2",
+            "user": {
+                "id": 1,
+                "name": "aaa bbb"
+            }
+
+        },
+        {
+            "id": 3,
+            "title": "proj3",
+            "user": {
+                "id": 3,
+                "name": "ccc ddd"
+            }
+
+        }
+
+
+    ]
+}

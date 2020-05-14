@@ -25,6 +25,7 @@
         "@nestjs/platform-express": "^6.10.14",
         "@nestjs/typeorm": "^7.0.0",
         "activedirectory2": "^1.3.0",
+        "moment": "^2.24.0",
         "mysql": "^2.18.1",
         "node-redmine": "^0.2.1",
         "reflect-metadata": "^0.1.13",
