@@ -1,14 +1,12 @@
-import { Controller, Get, Param, Post, Body, Put, Delete, HttpStatus, HttpService, Res, Query } from '@nestjs/common';
+import { Controller, Get, Param, HttpStatus, HttpService, Res, Post, Body, Put, Delete } from '@nestjs/common';
 import { ProjectsService } from './projects.service';
 import { Project } from './project.entity';
-import { Connection, Repository, Table, Any, Double } from 'typeorm';
+import {  Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { getTime} from './../redmine_utils';
-import { Imputation } from './../imputations/imputation.entity';
-import { Response, json } from 'express';
+import { Response } from 'express';
 import { ImputationsService } from './../imputations/imputations.service';
-import { UsersService } from 'src/users/users.service';
-import { User } from 'src/users/user.entity';
+import { Imputation } from 'src/imputations/imputation.entity';
+import { getTime } from 'src/redmine_utils';
 
 
 
@@ -19,7 +17,10 @@ export class ProjectsController {
         private projectService: ProjectsService,private imputService: ImputationsService) { }
         
     private http: HttpService
-
+    @Get(':id')
+    get(@Param() params) {
+        return this.projectService.getP(params.id);
+    }
 
     @Get('')
     getAll() {
@@ -31,15 +32,35 @@ export class ProjectsController {
          return this.projectService.getProjectsByUser(params.userId)
      }
 
-    @Get(':userId/:projectId')
+
+     
+
+
+
+     @Get('user/:userId/project/:projectId')
+     getProjectCollabs(@Param() params, @Res() res: Response) {
+    this.projectService.getProjectCollabs(params.userId, params.projectId,  data => {
+       console.log(data)
+        res.status(HttpStatus.OK).json(data);
+    })
+     }
+
+
+
+     @Get('val/:userId')
+     ValidHimself(@Param() params) {
+         return this.projectService.ValidHimself(params.userId) 
+     } 
+    
+
+
+
+    @Get('give/:userId/:projectId')
     getByUser(@Param() params) {
         return this.projectService.getProjectByUser(params.userId, params.projectId)
     }
 
-    @Get('/project/:id')
-     get(@Param() params) {
-         return this.projectService.getProject(params.id);
-     }
+  
 
     @Post()
     create(@Body() project: Project) {
@@ -56,28 +77,19 @@ export class ProjectsController {
          return this.projectService.deleteProject(param.id);
      }
 
-    @Get(':userId/:projectId/:date')
-    getWeekImputations(@Param() params, @Res() res: Response) {
-        this.projectService.getWeekImputations(params.userId, params.projectId, params.date, data => {
-           // console.log(data)
-            res.status(HttpStatus.OK).json(data);
-        })
-    }
 
 
 
 
 
 
- /*  @Get('/import/:userId')
+  @Get('/import/:userId')
     async Importprojects(@Param() params, @Res() res: Response) {
         const axios = require('axios');
         var userId = params.userId
         console.log('dfksdlfmlksd')
        // let user=new User();
        // const users= this.UserService.getUser(userId);
-        
-        
 
       axios.get('http://localhost:4000/projects/?user.id=' + userId)
             .then(resp => {
@@ -95,6 +107,7 @@ export class ProjectsController {
                             imputation.id = element.id;
                             imputation.date = element.spent_on;
                             imputation.hours = element.hours;
+                            imputation.status ="Initial"
                         
                             console.log(imputation)
                             this.imputService.createImputation(imputation)
@@ -116,9 +129,30 @@ export class ProjectsController {
            res.status(HttpStatus.OK).json(data);
         })
     }
-*/
 
 
+
+
+
+
+
+
+@Get('/weekimputations/:userId/:projectId/:date')
+getWeekImputations(@Param() params, @Res() res: Response) {
+    this.projectService.getWeekImputations(params.userId, params.projectId, params.date, data => {
+       // console.log(data)
+        res.status(HttpStatus.OK).json(data);
+    })
+}
+
+
+@Get('/projectimputations/:projectId/:date')
+getProjectWeekImputations(@Param() params, @Res() res: Response) {
+    this.projectService.getProjectWeekImputations( params.projectId, params.date, data => {
+       // console.log(data)
+        res.status(HttpStatus.OK).json(data);
+    })
+}
 
 
 

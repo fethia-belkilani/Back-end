@@ -1,8 +1,7 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, FindOneOptions } from 'typeorm';
 import { User } from './user.entity';
-import { UpdateUserDto } from './update.dto';
 
 @Injectable()
 export class UsersService {
@@ -19,12 +18,27 @@ export class UsersService {
         });    }
 
 
-    async getUser(_id: number): Promise<User[]> {
-        return await this.usersRepository.find({
+    async getUser(_id: number): Promise<User> {
+
+
+       /* return await this.usersRepository.find({
             select: ["name", "isValidator"],relations: ['collaborators','validators','projects'],
             where: [{ "id": _id }]
-        });
+        });*/
+
+         const options: FindOneOptions<User> = {
+            where: [{ "id": _id }],
+            relations: [ 'collaborators','validators','projects']
+          }
+          
+         return this.usersRepository.findOne(options);
+       
     }
+   
+
+
+    
+
 
     async updateUser(user: User) {
         this.usersRepository.save(user)
@@ -34,6 +48,9 @@ export class UsersService {
     async deleteUser(user: User) {
         this.usersRepository.delete(user);
     }
+
+    
+
 
    /* async updatecollab(idValidator:number,listCollab:number[]) {
         let validatorToUpdate = await this.usersRepository.findOne(idValidator);

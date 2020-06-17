@@ -11,8 +11,8 @@ export class Imputation  {
     @Column({type:'float'})
     hours:Double;
 
-    @Column({ length: 15 })
-    state:string;
+    @Column({ length: 10, default:"Initial"})
+    status:string;
 
     @Column()
     date:Date;

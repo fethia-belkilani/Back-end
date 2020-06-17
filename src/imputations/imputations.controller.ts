@@ -17,6 +17,11 @@ export class ImputationsController {
     get(@Param() params) {
         return this.service.getImputation(params.id);
     }
+    @Get(':user/:project')
+    getByUser(@Param() params) {
+        return this.service.getByUserAndProject(params.user,params.project);
+    }
+   
 
    
     @Post()
@@ -24,13 +29,27 @@ export class ImputationsController {
         return this.service.createImputation(imputation);
     }
 
-    @Put()
+   @Put()
     update(@Body() imputation: Imputation) {
         return this.service.updateImputation(imputation);
     }
+
+
+    @Put('/changestatus/:status')
+    updateListImputations(@Param() params, @Body() listImputations: Imputation[]) {
+        for (var i = 0; i < listImputations.length; i++) {
+            (listImputations[i].status=params.status) 
+            this.service.updateImputation(listImputations[i])
+        }
+     
+    }
+
+
 
     @Delete(':id')
     deleteImputation(@Param() params) {
         return this.service.deleteImputation(params.id);
     }
+   
+
 }

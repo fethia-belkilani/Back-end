@@ -15,7 +15,7 @@ export class ImputationsService {
     async getImputations(): Promise<Imputation[]> {
         return await this.imputationsRepository.find(
             {
-                select: ["id","hours","date","state"],relations: ["project"] ,
+                select: ["id","hours","date","status"],relations: ["project"] ,
                 
             });
     }
@@ -23,15 +23,26 @@ export class ImputationsService {
 
     async getImputation(_id: number): Promise<Imputation[]> {
         return await this.imputationsRepository.find({
-            select: ["id","hours","date","state"],relations: ["user","project"],
+            select: ["id","hours","date","status"],relations: ["user","project"],
             where: [{ "id": _id }]
         });
     }
+
+    async getByUserAndProject(userId:number,projectId:number): Promise<Imputation[]> {
+        return  await this.imputationsRepository.createQueryBuilder("imputation")
+        .select(["imputation.id","imputation.hours","imputation.status","imputation.date"])
+        .innerJoinAndSelect("imputation.user", "user", "user.id = :userId", { userId })
+        .innerJoinAndSelect("imputation.project", "project", "project.id = :projectId", { projectId })
+        .getMany()   
+        }
 
 
     async updateImputation(imputation: Imputation) {
         this.imputationsRepository.save(imputation)
     }
+
+
+
 
     async deleteImputation(imputation: Imputation) {
         this.imputationsRepository.delete(imputation);
