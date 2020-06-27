@@ -12,6 +12,11 @@ import { Project } from './projects/project.entity';
 import { EventsModule } from './events/events.module';
 import { Event } from './events/event.entity';
 
+import { MailerModule} from '@nestjs-modules/mailer';
+import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
+
+import { ScheduleModule } from '@nestjs/schedule';
+import { CronService } from './cron/cron.service';
 
 
 
@@ -32,10 +37,35 @@ EventsModule,
     "entities": [User,Imputation,Project,Event],
      synchronize: true,
   }),
+  ScheduleModule.forRoot(),
+
+
+  MailerModule.forRoot({
+    transport: {
+      host: 'smtp.gmail.com',
+      port: 465,
+      secure: true, // upgrade later with STARTTLS
+      auth: {
+        user: "timevioo@gmail.com",
+        pass: "timevioo123",
+      },
+    },
+    defaults: {
+      from:' asma <asma.aliasma22@gmail.com>',
+    },
+    template: {
+      dir: process.cwd() + '/templates/',
+      adapter: new HandlebarsAdapter(), // or new PugAdapter()
+      options: {
+        strict: true,
+      },
+    },
+  }),
+
  
   
 ],
   controllers: [AppController, TimeController, ActiveController],
-  providers: [AppService],
+  providers: [AppService, CronService],
 })
 export class AppModule {}

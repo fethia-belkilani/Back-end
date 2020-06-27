@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Post, Body, Put, Delete } from '@nestjs/common';
+import { Controller, Get, Param, Post, Body, Put, Delete, Res } from '@nestjs/common';
 import { ImputationsService } from './imputations.service';
 import { Imputation } from 'src/Imputations/Imputation.entity';
 
@@ -33,7 +33,17 @@ export class ImputationsController {
     update(@Body() imputation: Imputation) {
         return this.service.updateImputation(imputation);
     }
+    @Get('/weekimputations/:userId/:projectId/:date')
+    getWeekimp(@Param() params) {
+            return this.service.getWeekImputations(params.userId, params.projectId, params.date)
 
+    }
+
+    @Get('/sentweekimputations/:userId/:projectId/:date')
+    getSent(@Param() params) {
+            return this.service.getSentWeekImputations(params.userId, params.projectId, params.date)
+
+    }
 
     @Put('/changestatus/:status')
     updateListImputations(@Param() params, @Body() listImputations: Imputation[]) {
@@ -42,6 +52,12 @@ export class ImputationsController {
             this.service.updateImputation(listImputations[i])
         }
      
+    }
+
+    @Get('/sum/:userId/:projectId')
+    sumHours(@Param() params) {
+        return this.service.sumHours(params.userId, params.projectId)
+
     }
 
 

@@ -4,17 +4,44 @@ import { UsersService } from './users.service';
 import { User } from './user.entity';
 import {  Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import nodemailer = require('nodemailer');
+import { MailerService } from '@nestjs-modules/mailer';
 
 @Controller('users')
 export class UsersController {
 
-    constructor(private service: UsersService, @InjectRepository(User) private usersRepository: Repository<User>) { }
+    constructor(private readonly mailerService: MailerService,private service: UsersService, @InjectRepository(User) private usersRepository: Repository<User>) { }
 
     @Get('')
     getAll(){
       return this.service.getUsers();
-    }     
+    }  
+    
+    
+
+
+
+
+ 
+  
+  @Get('exist/:user/:date')
+  async hasNewTask(@Param() params) {
+      return this.service.hasNewTask(params.user,params.date)
+  }
      
+
+  @Get('team/:user/:proj')
+  async getProjectTeam(@Param() params) {
+      return this.service.getCollabs(params.user,params.proj)
+  }
+
+
+  @Put('/role/:id/:role')
+  async updateRole(@Param() params) {
+   return this.service.updateRole(params.id,params.role)
+
+  }
+
 
      @Post(':id1')
      async relation(@Param() params, @Body() collabs:User[]) {

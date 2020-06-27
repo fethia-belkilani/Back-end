@@ -2,11 +2,13 @@ import { Injectable, Inject } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, FindOneOptions } from 'typeorm';
 import { User } from './user.entity';
+import moment from 'moment';
+import { MailerService } from '@nestjs-modules/mailer';
 
 @Injectable()
 export class UsersService {
 
-    constructor(@InjectRepository(User) private usersRepository: Repository<User>) { }
+    constructor(@InjectRepository(User) private usersRepository: Repository<User>,private readonly mailerService: MailerService) { }
 
     async createUser(user: User) {
         this.usersRepository.save(user)
@@ -35,11 +37,6 @@ export class UsersService {
        
     }
    
-
-
-    
-
-
     async updateUser(user: User) {
         this.usersRepository.save(user)
     }
@@ -48,6 +45,15 @@ export class UsersService {
     async deleteUser(user: User) {
         this.usersRepository.delete(user);
     }
+    async updateRole(userId:number, role:string) {
+        var r=false
+        if(role=="true") r=true
+      const u:User= await this.usersRepository.findOne(userId);
+      u.isValidator=r;
+      this.usersRepository.save(u); 
+    
+      
+        }
 
     
 
@@ -61,4 +67,49 @@ export class UsersService {
         let updated = Object.assign(validatorToUpdate,dto);
         return await this.usersRepository.save(updated);
     }*/
+
+
+    async hasNewTask(id:number,datee:Date): Promise<Boolean> {
+        var date =new Date(datee)
+        const result = await this.usersRepository.createQueryBuilder("user")
+        .where("user.id= :id",{id:id})
+        .leftJoinAndSelect("user.imputations","imputations")
+        .innerJoin("user.imputations", "imputation", "imputation.date = :date", { date })
+        .getOne();
+        return result !== undefined;
+
+       }
+
+
+       
+
+
+       async getCollabs(userId:number,projectId:number): Promise<User[]> {
+        return  await this.usersRepository.createQueryBuilder("user")
+        .select(["user.id","user.name"])
+        .innerJoin("user.projects", "project", "project.id = :id", { id:projectId })
+        .innerJoin("user.collaborators", "collaborators")
+        .innerJoin("user.validators", "validator", "validator.id = :userId", { userId })
+        .getMany()
+    }
+
+
+
+       sendmail(maillist:string) {
+        this.mailerService.sendMail({
+          to: maillist, // list of receivers
+          from:' Time-vioo <timevioo@gmail.com>',//sender
+          subject: 'Valider vos activités', // Subject line
+          text: '', // plaintext body
+          html: '<p>Vous avez de nouvelles imputations en attente </p>', // HTML body content
+        })
+        .then((success) => {
+          console.log(success)
+        })
+        .catch((err) => {
+          console.log(err)
+        });
+         }
+
+
 }

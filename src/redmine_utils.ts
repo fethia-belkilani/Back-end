@@ -1,4 +1,5 @@
 import Redmine = require('node-redmine');
+
 import { Imputation } from './imputations/imputation.entity';
 
 export function getTime(userId:number, projectId: number, callback) {

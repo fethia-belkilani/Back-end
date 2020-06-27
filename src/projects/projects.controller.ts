@@ -32,18 +32,15 @@ export class ProjectsController {
          return this.projectService.getProjectsByUser(params.userId)
      }
 
-
+     @Get('c/:id')
+     async ff(@Param() params) {
+         return this.projectService.getProjectUsers(params.id)
+     }
      
 
 
 
-     @Get('user/:userId/project/:projectId')
-     getProjectCollabs(@Param() params, @Res() res: Response) {
-    this.projectService.getProjectCollabs(params.userId, params.projectId,  data => {
-       console.log(data)
-        res.status(HttpStatus.OK).json(data);
-    })
-     }
+    
 
 
 
@@ -134,16 +131,12 @@ export class ProjectsController {
 
 
 
+  
 
 
 
-@Get('/weekimputations/:userId/:projectId/:date')
-getWeekImputations(@Param() params, @Res() res: Response) {
-    this.projectService.getWeekImputations(params.userId, params.projectId, params.date, data => {
-       // console.log(data)
-        res.status(HttpStatus.OK).json(data);
-    })
-}
+
+
 
 
 @Get('/projectimputations/:projectId/:date')
@@ -154,6 +147,33 @@ getProjectWeekImputations(@Param() params, @Res() res: Response) {
     })
 }
 
+
+////////////////////////////////////////with callbacks
+
+/*@Get('/weekimputations/:userId/:projectId/:date')
+getWeekImputations(@Param() params, @Res() res: Response) {
+    this.projectService.getWeekImputations(params.userId, params.projectId, params.date, data => {
+       // console.log(data)
+        res.status(HttpStatus.OK).json(data);
+    })
+}
+
+
+@Get('/sentweekimputations/:userId/:projectId/:date')
+getSentWeekImputations(@Param() params, @Res() res: Response) {
+    this.projectService.getSentWeekImputations(params.userId, params.projectId, params.date, data => {
+        res.status(HttpStatus.OK).json(data);
+    })
+}
+
+ @Get('user/:userId/project/:projectId')
+     getProjectCollabs(@Param() params, @Res() res: Response) {
+    this.projectService.getProjectCollabs(params.userId, params.projectId,  data => {
+       console.log(data)
+        res.status(HttpStatus.OK).json(data);
+    })
+     }
+*/
 
 
 

@@ -11,7 +11,8 @@ import { UsersService } from './../users/users.service';
 
 @Injectable()
 export class ProjectsService {
-    constructor(@InjectRepository(Project) private projectsRepository: Repository<Project>,private imputService: ImputationsService,private userService:UsersService) { }
+    constructor(@InjectRepository(Project) private projectsRepository: Repository<Project>,
+    private imputService: ImputationsService,private userService:UsersService) { }
     
 
     async createProject(project: Project) {
@@ -45,10 +46,10 @@ export class ProjectsService {
     
 
 
-        async getProjectUsers(userId:number,projectId:number): Promise<Project[]> {
+        async getProjectUsers(projectId:number): Promise<Project[]> {
             return  await this.projectsRepository.createQueryBuilder("project")
             .select(["project.id"])
-            .innerJoin("project.users", "user", "user.id = :userId", { userId })
+            //.innerJoinAndSelect("project.users", "user", "user.id = :userId", { userId })
             .innerJoinAndSelect("project.users", "users")
             .where("project.id= :id",{id:projectId})
             .getMany()   
@@ -100,50 +101,22 @@ export class ProjectsService {
                 v= true
             })
             return v  
-    
+
             })
     
         }
-    async getProjectCollabs(userId:number,projectId:number,callback){
-        var tabUsers: Array<User>=[]
-        this.getProjectUsers(userId,projectId).then(res=>{
-            res.forEach(p=>{
-                p.users.forEach(user=>{
-                    if (user.id!= userId ||  ( user.id==userId && this.ValidHimself(userId)  )  ) 
-                        {tabUsers.push(user) }
-                    
-                })                
-            })
-            callback(tabUsers)
-        }).catch(error => {
-            console.log(error);
-        });       
-    }
+
+  
+
+
+
+    
+ 
+
 
    
 
 
-
-
-    async getWeekImputations(userId:number,projectId:number,date:Date,callback){
-        var tab: Array<Imputation>=[]
-        var myDate=moment.utc(date).format('YYYY-MM-DD')
-
-        this.imputService.getByUserAndProject(userId,projectId).then(res=>{
-            res.forEach(imput=>{
-                var imputDate=moment.utc(imput.date).format('YYYY-MM-DD')
-                if(  moment(imputDate).isSame( moment(myDate),"week"))
-                    tab.push(imput)
-
-            })    
-            callback(tab)
-       
-        }).catch(error => {
-            console.log(error)
-        });
-
-           
-    }
  
     
 
@@ -188,6 +161,41 @@ export class ProjectsService {
     
     
 
+
+/////////////////////////////////////////callbacks
+       /*async getWeekImputations(userId:number,projectId:number,date:Date,callback){
+        var tab: Array<Imputation>=[]
+        var myDate=moment.utc(date).format('YYYY-MM-DD')
+
+        this.imputService.getByUserAndProject(userId,projectId).then(res=>{
+            res.forEach(imput=>{
+                var imputDate=moment.utc(imput.date).format('YYYY-MM-DD')
+                if(  moment(imputDate).isSame( moment(myDate),"week"))
+                    tab.push(imput)
+            })    
+            callback(tab)
+       
+        }).catch(error => {
+            console.log(error)
+        });       
+    }
+     async getSentWeekImputations(userId:number,projectId:number,date:Date,callback){
+        var tab: Array<Imputation>=[]
+        var myDate=moment.utc(date).format('YYYY-MM-DD')
+
+        this.imputService.getByUserAndProject(userId,projectId).then(res=>{
+            res.forEach(imput=>{
+                var imputDate=moment.utc(imput.date).format('YYYY-MM-DD')
+                if(  moment(imputDate).isSame( moment(myDate),"week")){
+                    if(imput.status=='Sent')
+                       tab.push(imput)}
+            })    
+            callback(tab)
+       
+        }).catch(error => {
+            console.log(error)
+        });       
+    }*/
 
     
 
