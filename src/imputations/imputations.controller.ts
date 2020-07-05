@@ -23,9 +23,9 @@ export class ImputationsController {
         return this.service.getByUserAndProject(params.user, params.project);
     }
 
-    @Post('/:userId/:date')
-    create(@Param() params, @Body() imputation: Imputation, @Res() res: Response) {
-        this.service.validTotal(params.userId, params.date).then(valid => {
+    @Post()
+    create( @Body() imputation: Imputation, @Res() res: Response) {
+        this.service.validTotal(imputation.user.id,imputation.date,imputation.hours).then(valid => {
             if (valid === true) {
                 this.service.createImputation(imputation).then(imput => {
                     return res.status(HttpStatus.OK).json(imput);
@@ -38,10 +38,20 @@ export class ImputationsController {
 
     }
 
-    @Get('/valid/:userId/:date')
+    
+    /*@Post()
+    create( @Body() imputation: Imputation, @Res() res: Response) {
+            
+                this.service.createImputation(imputation).then(imput => {
+                    return res.status(HttpStatus.OK).json(imput);
+                });
+            
+    }*/
+
+ /*  @Get('/valid/:userId/:date')
     validg(@Param() params) {
-        return this.service.validTotal(params.userId, params.userId)
-    }
+       return  this.service.validTotal(params.userId, params.date)  }
+*/
 
     @Put()
     update(@Body() imputation: Imputation) {
@@ -72,10 +82,10 @@ export class ImputationsController {
         return this.service.sumHours(params.userId, params.projectId)
 
     }
-    @Get('/valid/:userId/:date')
+   /* @Get('/valid/:userId/:date')
     valid(@Param() params) {
         return this.service.validTotal(params.userId, params.date)
-    }
+    }*/
 
     @Delete(':id')
     deleteImputation(@Param() params) {

@@ -1,7 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, Double } from 'typeorm';
 import { Imputation } from './imputation.entity';
+import { Project } from 'src/projects/project.entity';
+import { User } from 'src/users/user.entity';
+import moment, { weekdays } from 'moment';
+import { count } from 'console';
 
 
 @Injectable()
@@ -20,6 +24,9 @@ export class ImputationsService {
             });
     }
 
+
+
+
     async getImputation(_id: number): Promise<Imputation[]> {
         return await this.imputationsRepository.find({
             select: ["id", "hours", "date", "status"], relations: ["user", "project"],
@@ -35,13 +42,27 @@ export class ImputationsService {
             .getMany()
     }
 
+
+
+
+
+
     async updateImputation(imputation: Imputation) {
         this.imputationsRepository.save(imputation)
     }
 
+
+
+
     async deleteImputation(imputation: Imputation) {
         this.imputationsRepository.delete(imputation);
     }
+
+
+
+
+    //  .where( "imputation.date= :date",{date:date})
+    //  .where("WEEK(imputation.date) = WEEK(date)")
 
     async getWeekImputations(userId: number, projectId: number, date: Date): Promise<Imputation[]> {
         return await this.imputationsRepository.createQueryBuilder("imputation")
@@ -63,7 +84,7 @@ export class ImputationsService {
             .orderBy("imputation.date")
             .getMany()
     }
-
+    //
     async sumHours(userId: number, projectId: number) {
         return await this.imputationsRepository.createQueryBuilder("imputation")
             .select("imputation.status")
@@ -72,17 +93,25 @@ export class ImputationsService {
             .innerJoin("imputation.user", "user", "user.id = :userId", { userId })
             .innerJoin("imputation.project", "project", "project.id = :projectId", { projectId })
             .getRawMany()
+
     }
 
-    async validTotal(userId: number, datee: Date): Promise<Boolean> {
+    async validTotal(userId: number, datee: Date,hours:Double): Promise<Boolean> {
         var date = new Date(datee)
         const result = await this.imputationsRepository.createQueryBuilder("imputation")
             .select("SUM(imputation.hours )", "sum")
             .innerJoin("imputation.user", "user", "user.id = :userId", { userId })
-            .where("imputation.date=:date", { date: date })
+            .where("imputation.date= :date", { date: date })
             .getRawOne();
-        return (result.sum <= 1)
+        return (result.sum+hours <= 1)
     }
 
-    
+
+
+
+
+
+
+
+
 }
