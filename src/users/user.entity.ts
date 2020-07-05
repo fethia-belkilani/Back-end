@@ -4,6 +4,9 @@ import { Imputation } from 'src/imputations/imputation.entity';
 
 @Entity()
 export class User {
+    constructor(id){
+        id=id
+    }
 
     @PrimaryColumn()
     id: number;
