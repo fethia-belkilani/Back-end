@@ -63,13 +63,13 @@ export class UsersService {
     return result !== undefined;
 
   }
+//      .innerJoinAndSelect("user.collaborators", "collaborators")
 
   async getCollabs(userId: number, projectId: number): Promise<User[]> {
     return await this.usersRepository.createQueryBuilder("user")
       .select(["user.id", "user.name"])
-      .innerJoin("user.projects", "project", "project.id = :id", { id: projectId })
-      .innerJoin("user.collaborators", "collaborators")
       .innerJoin("user.validators", "validator", "validator.id = :userId", { userId })
+      .innerJoin("user.projects", "project", "project.id = :id", { id: projectId })
       .getMany()
   }
 
@@ -79,7 +79,7 @@ export class UsersService {
       from: ' Time-vioo <timevioo@gmail.com>',//sender
       subject: 'Valider vos activités', // Subject line
       text: '', // plaintext body
-      html: '<p>Vous avez de nouvelles imputations en attente </p>'
+      html: "<p>Vous avez de nouvelles demandes d'approbation en attente, veuillez consulter votre espace de travail</p>"
     })
       .then((success) => {
         console.log(success)

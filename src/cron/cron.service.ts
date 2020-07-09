@@ -11,17 +11,17 @@ export class CronService {
     constructor(private userService:UsersService){}
 
 
-
+    
   // @Cron('0 16 * * 5')
+ // @Cron('*/10 * * * * *') 
    /* WeeklyMail() {
      console.log('Every 10 seconds');
      var maillist = 
      "fethia.belkilani@gmail.com";
       this.userService.sendmail(maillist)
- 
 
-    }
-    */
+    }*/
+    
 
 }
    //0 16 * * 1-5

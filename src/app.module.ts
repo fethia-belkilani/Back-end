@@ -51,7 +51,7 @@ EventsModule,
       },
     },
     defaults: {
-      from:' asma <asma.aliasma22@gmail.com>',
+      from:' asma <timevioo@gmail.com>',
     },
     template: {
       dir: process.cwd() + '/templates/',
